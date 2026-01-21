@@ -55,8 +55,8 @@ export default function TaskTable() {
     );
 
   const handleTaskAdded = async () => {
-    await loadTasks();
     setOpenModal(false);
+    await loadTasks();
     NotificationMessage(
       "success",
       "Task Added",
