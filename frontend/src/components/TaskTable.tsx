@@ -8,10 +8,13 @@ import Swal, { type SweetAlertIcon } from "sweetalert2";
 export default function TaskTable() {
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const [openModal, setOpenModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const loadTasks = async () => {
+    setLoading(true);
     const data = await taskService.fetchTasks();
     setTasks(data);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -79,6 +82,11 @@ export default function TaskTable() {
 
   return (
     <div className="relative">
+      {loading && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="w-10 h-10 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
+        </div>
+      )}
       {/* Glass Table Container */}
       <div className="overflow-x-auto rounded-xl backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl">
         <table className="min-w-full text-sm text-white">
