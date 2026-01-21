@@ -22,12 +22,14 @@ export default function TaskTable() {
   }, []);
 
   const toggleCompleted = async (task: TaskType) => {
+    setLoading(true);
     await taskService.updateTask(task._id, {
       completed: !task.completed,
     });
     loadTasks();
   };
   const deleteTask = async (task: TaskType) => {
+    setLoading(true);
     await taskService.deleteTask(task._id);
     loadTasks();
     NotificationMessage(
@@ -82,9 +84,10 @@ export default function TaskTable() {
 
   return (
     <div className="relative">
+      {/* Full-page loader */}
       {loading && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="w-10 h-10 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-md">
+          <div className="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
         </div>
       )}
       {/* Glass Table Container */}
