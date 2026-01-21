@@ -8,9 +8,16 @@ import { errorHandler } from "./middleware/errorHandler";
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 8000;
 
-app.use(cors());
+/**
+ * CORS CONFIG (IMPORTANT)
+ */
+app.use(cors({
+  origin: "https://task-priority-app-delta.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
 app.use(express.json());
 
 app.use("/api/tasks", taskRoutes);
@@ -20,10 +27,23 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Task Priority Backend Running");
 });
 
-mongoose
-  .connect(process.env.MONGO_URI!)
-  .then(() => {
-    console.log("MongoDB connected");
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-  })
-  .catch(err => console.error("MongoDB connection error:", err));
+/**
+ * MONGODB CONNECTION
+ * (connect once – reuse connection)
+ */
+let isConnected = false;
+
+async function connectDB() {
+  if (isConnected) return;
+
+  await mongoose.connect(process.env.MONGO_URI!);
+  isConnected = true;
+  console.log("MongoDB connected");
+}
+
+connectDB();
+
+/**
+ * EXPORT APP FOR VERCEL
+ */
+export default app;
